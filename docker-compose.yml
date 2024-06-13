@@ -1,0 +1,78 @@
+services:
+  # jenkin:
+  #   # image: jenkins/jenkins:jdk17
+  #   container_name: jenkin
+  #   build:
+  #     context: ./
+  #   ports:
+  #     - "8080:8080"
+  #     - "50000:50000"
+  #   networks:
+  #     - mynetwork
+  #   volumes:
+  #     - /home/uizwmuha/yp-class/Practice/devops_class
+  #   restart: on-failure
+
+  db:
+    image: mysql:oraclelinux9
+    container_name: db
+    ports:
+      - "3360:3360"
+    environment:
+      - MYSQL_DATABASE=DevOpsDB
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_USER=firdaus
+      - MYSQL_PASSWORD=admin
+      - MYSQL_HOST=db
+    networks:
+      - mynetwork
+
+  # db:
+  #   image: postgres
+  #   restart: always
+  #   container_name: db
+  #   # set shared memory limit when using docker-compose
+  #   shm_size: 128mb
+  #   # or set shared memory limit when deploy via swarm stack
+  #   #volumes:
+  #   #  - type: tmpfs
+  #   #    target: /dev/shm
+  #   #    tmpfs:
+  #   #      size: 134217728 # 128*2^20 bytes = 128Mb
+  #   environment:
+  #     POSTGRES_PASSWORD: admin
+  #   ports:
+  #     - "3360:3360"
+  #   networks:
+  #     - mynetwork
+
+  backend:
+    container_name: backend
+    build:
+      context: ./DevopsClass
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_DATABASE=DevOpsDB
+      - POSTGRES_USER=firdaus
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_HOST=db
+    networks:
+      - mynetwork
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ./DevopsClassFront/dist
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    name: mynetwork
+    # external: true

@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "prettier --check .",
+    "test": "vitest",
+    "testrun": "vitest run"
+  },
+  "dependencies": {
+    "prettier": "^3.3.2"
+  }
+}
